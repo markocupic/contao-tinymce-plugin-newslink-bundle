@@ -18,7 +18,7 @@
     "require": {
         "php": "^7.4 || ^8.0",
         "contao/core-bundle": "^4.13 || ^5.0",
-        "markocupic/contao-tinymce-plugin-newslink-bundle": "^1.1"
+        "markocupic/contao-tinymce-plugin-builder-bundle": "^1.1"
     },
     "autoload": {
         "psr-4": {
