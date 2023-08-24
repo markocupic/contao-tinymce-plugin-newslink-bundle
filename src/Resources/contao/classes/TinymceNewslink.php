@@ -1,60 +1,46 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Marko
- * Date: 22.01.2017
- * Time: 21:36
- */
+
+declare(strict_types=1);
 
 namespace Markocupic\ContaoTinymcePluginNewslinkBundle;
 
+use Contao\Database;
+use Contao\File;
+use Contao\Files;
+use Contao\System;
 
-/**
- * Class TinymceNewslink
- * @package Markocupic\ContaoTinymcePluginNewslinkBundle
- */
 class TinymceNewslink
 {
     /**
      * Get all News items as json_encoded array
-     * @author Marko Cupic
-     * @return string
      */
-    public static function getContaoNewsArchivesAsJSON()
+    public static function getContaoNewsArchivesAsJSON(): array
     {
-        $arrNews = array();
-        $arrArchives = array();
-        $oArchive = \Database::getInstance()->execute("SELECT * FROM tl_news_archive");
-        while ($oArchive->next())
-        {
-            $oNews = \Database::getInstance()->prepare("SELECT * FROM tl_news WHERE pid=?")->execute($oArchive->id);
-            while ($oNews->next())
-            {
-                if ($oNews->published)
-                {
-                    $arrNews['archive_' . $oArchive->id][] = array('value' => $oNews->id, 'text' => htmlspecialchars(html_entity_decode($oNews->headline)));
+        $arrNews = [];
+        $arrArchives = [];
+        $oArchive = Database::getInstance()->execute("SELECT * FROM tl_news_archive");
+        while ($oArchive->next()) {
+            $oNews = Database::getInstance()->prepare("SELECT * FROM tl_news WHERE pid=?")->execute($oArchive->id);
+            while ($oNews->next()) {
+                if ($oNews->published) {
+                    $arrNews['archive_'.$oArchive->id][] = ['value' => $oNews->id, 'text' => htmlspecialchars(html_entity_decode($oNews->headline))];
                 }
             }
             // Do not list archive, if there is no item
-            if (isset($arrNews['archive_' . $oArchive->id]))
-            {
-                $arrArchives[] = array('value' => $oArchive->id, 'text' => htmlspecialchars(html_entity_decode(strtoupper($oArchive->title))));
+            if (isset($arrNews['archive_'.$oArchive->id])) {
+                $arrArchives[] = ['value' => $oArchive->id, 'text' => htmlspecialchars(html_entity_decode(strtoupper($oArchive->title)))];
             }
         }
 
-        return array('archives' => $arrArchives, 'news' => $arrNews);
+        return ['archives' => $arrArchives, 'news' => $arrNews];
     }
-
 
     /**
      * loadLanguageData-Hook
-     * @param $strName
-     * @param $strLanguage
      */
-    public function loadLanguageData($strName, $strLanguage)
+    public function loadLanguageData(string $strName, string $strLanguage): void
     {
-        if ($strName == 'default')
-        {
+        if ($strName === 'default') {
             $GLOBALS['TINYMCE']['SETTINGS']['CONFIG_ROW']['newslink_language_data'] = json_encode($GLOBALS['TL_LANG']['TINYMCE']['NEWSLINK']);
         }
 
@@ -65,13 +51,13 @@ class TinymceNewslink
      * Runonce
      * Copy plugin sources to assets/tinymce4/js/plugins/newslink
      */
-    public function movePluginFiles()
+    public function movePluginFiles(): void
     {
-        $oFiles = \Files::getInstance();
-        if (!is_file(TL_ROOT . '/vendor/markocupic/contao-tinymce-plugin-newslink-bundle/src/Resources/tinymce4/js/plugins/newslink/copied.txt'))
-        {
+        $oFiles = Files::getInstance();
+
+        if (!is_file(System::getContainer()->getParameter('kernel.project_dir').'/vendor/markocupic/contao-tinymce-plugin-newslink-bundle/src/Resources/tinymce4/js/plugins/newslink/copied.txt')) {
             $oFiles->rcopy('vendor/markocupic/contao-tinymce-plugin-newslink-bundle/src/Resources/tinymce4/js/plugins/newslink', 'assets/tinymce4/js/plugins/newslink');
-            $objFile = new \File('vendor/markocupic/contao-tinymce-plugin-newslink-bundle/src/Resources/tinymce4/js/plugins/newslink/copied.txt', true);
+            $objFile = new File('vendor/markocupic/contao-tinymce-plugin-newslink-bundle/src/Resources/tinymce4/js/plugins/newslink/copied.txt');
             $objFile->append('Plugin files "assets/tinymce4/js/plugins/newslink/plugin.min.js" already copied to the assets directory in "assets/tinymce4/js/plugins/newslink".');
             $objFile->close();
         }
