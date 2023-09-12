@@ -13,13 +13,9 @@ namespace Markocupic\ContaoTinymcePluginNewslinkBundle\ContaoManager;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
+use Markocupic\ContaoTinymcePluginBuilderBundle\MarkocupicContaoTinymcePluginBuilderBundle;
+use Markocupic\ContaoTinymcePluginNewslinkBundle\MarkocupicContaoTinymcePluginNewslinkBundle;
 
-/**
- * Plugin for the Contao Manager.
- *
- * @author Marko Cupic
- * @author Peter Broghammer <https://github.com/pbd-kn>
- */
 class Plugin implements BundlePluginInterface
 {
     /**
@@ -28,11 +24,11 @@ class Plugin implements BundlePluginInterface
     public function getBundles(ParserInterface $parser)
     {
         return [
-            BundleConfig::create('Markocupic\ContaoTinymcePluginNewslinkBundle\MarkocupicContaoTinymcePluginNewslinkBundle')
+            BundleConfig::create(MarkocupicContaoTinymcePluginNewslinkBundle::class)
                 ->setLoadAfter([
-                    'Contao\CoreBundle\ContaoCoreBundle',
-                    'Markocupic\ContaoTinymcePluginBuilderBundle\MarkocupicContaoTinymcePluginBuilderBundle'
-                ])
+                    ContaoCoreBundle::class,
+                    MarkocupicContaoTinymcePluginBuilderBundle::class,
+                ]),
         ];
     }
 }
