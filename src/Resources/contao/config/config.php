@@ -7,7 +7,6 @@
  * @license LGPL-3.0+
  */
 
-use Markocupic\ContaoTinymcePluginNewslinkBundle\TinymceNewslink;
 
 // Copy plugin source to "assets/tinymce4/js/plugins/newslink"
 $GLOBALS['TL_HOOKS']['initializeSystem'][] = [TinymceNewslink::class, 'movePluginFiles'];
@@ -22,6 +21,9 @@ if ($GLOBALS['TL_CONFIG']['useRTE']) {
 
     // Add a button to the toolbar in tinymce editor
     $GLOBALS['TINYMCE']['SETTINGS']['TOOLBAR'][] = 'newslink';
+
+
+    // Add a content_css in tinymce editor
 
     // Add a new config row to the tinymce.init method (json_encoded array from a PHP class)
     $GLOBALS['TINYMCE']['SETTINGS']['CONFIG_ROW']['newslink_news_data'] = json_encode(TinymceNewslink::getContaoNewsArchivesAsJSON());

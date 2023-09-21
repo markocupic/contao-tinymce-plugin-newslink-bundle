@@ -31,8 +31,6 @@ class TinymceNewslink
                 $arrArchives[] = ['value' => $oArchive->id, 'text' => htmlspecialchars(html_entity_decode(strtoupper($oArchive->title)))];
             }
         }
-
-        return ['archives' => $arrArchives, 'news' => $arrNews];
     }
 
     /**
